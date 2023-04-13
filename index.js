@@ -10,8 +10,8 @@ const main = async (baseUrl, project, token) => {
  const headers =  {
    'Authorization': `Token ${token}`
  }
+  //Getting the project linked files 
   const url = `${baseUrl}/rest/1/${project}/file`;
-
   const response = await fetch(url, {
     headers:headers
   });
@@ -22,12 +22,13 @@ const main = async (baseUrl, project, token) => {
   }
 
   const data = await response.json();
+  
   const projectFiles = data.projectFile;
-
   if (!fs.existsSync(project)) {
     fs.mkdirSync(project);
   }
 
+  ///Let's download each file
   for (const file of projectFiles) {
     const fileUrl = `${baseUrl}/rest/1/${project}/file/${file.fileId}?key=${file.key}`;
     const fileResponse = await fetch(fileUrl, {
@@ -38,13 +39,11 @@ const main = async (baseUrl, project, token) => {
       console.log(`Error downloading file ${file.localName}: ${fileResponse.statusText}`);
       continue;
     }
-
+    
     const filePath = path.join(project,file.fileId + "_" + file.localName);
     const fileStream = fs.createWriteStream(filePath);
     fileResponse.body.pipe(fileStream);
-
     console.log(`Downloading ${file.fileId + "_" +file.localName}...`);
-
     await new Promise((resolve, reject) => {
       fileStream.on('finish', resolve);
       fileStream.on('error', reject);
