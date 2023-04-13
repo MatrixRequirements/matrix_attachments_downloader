@@ -4,7 +4,7 @@ A simple Node.js app to download files from matrixreq project using fetch.
 
 ## Prerequisites
 
-- Node.js (version 14 or higher recommended)
+- Node.js (version 18 recommended)
 
 ## Installation
 
